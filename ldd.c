@@ -34,8 +34,14 @@ static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t s
 }
 
 static int my_module_init(void){
+	/*
+	 * Create a file in /proc with rw permission for all users.
+	 * Note that if 'others' don't have write permission,
+	 * writing to this file fails with Permission Denied.
+	 */
+	umode_t mode = 0666;	
 	printk("my module init: entry\n");	
-	my_file_node = proc_create("my_file_node", 0, NULL, &fn_proc_ops);
+	my_file_node = proc_create("my_file_node", mode, NULL, &fn_proc_ops);
 	printk("my module init: exit\n");	
 	return 0;
 }
