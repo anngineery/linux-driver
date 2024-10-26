@@ -1,3 +1,4 @@
+CFLAGS_ldd.o := -DDEBUG
 obj-m += ldd.o
 
 all:
