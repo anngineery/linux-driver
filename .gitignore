@@ -1,4 +1,6 @@
 ldd.mod*
-{M,m}odule*
+Module*
+module*
 *.o
 .*
+*.ko
