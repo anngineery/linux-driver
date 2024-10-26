@@ -15,17 +15,17 @@ struct proc_ops fn_proc_ops = {
 };
 
 static ssize_t read_op(struct file *f, char __user *user_buffer, size_t size, loff_t *offset){
-    char msg_to_ubuffer[] = "my_file_node is read\n";
-    size_t len = strlen(msg_to_ubuffer);
+	char msg_to_ubuffer[] = "my_file_node is read\n";
+	size_t len = strlen(msg_to_ubuffer);
 
-    printk("inside read_op: offset=%lld, len=%ld\n", *offset, len);
+	printk("inside read_op: offset=%lld, len=%ld\n", *offset, len);
 
-    if (*offset >= len)	return 0;
+	if (*offset >= len)	return 0;
 
-    copy_to_user(user_buffer, msg_to_ubuffer, len);
-    *offset += len;
+	copy_to_user(user_buffer, msg_to_ubuffer, len);
+	*offset += len;
 
-    return len;
+	return len;
 }
 
 static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t size, loff_t *offset){
@@ -34,16 +34,16 @@ static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t s
 }
 
 static int my_module_init(void){
-    printk("my module init: entry\n");	
-    my_file_node = proc_create("my_file_node", 0, NULL, &fn_proc_ops);
-    printk("my module init: exit\n");	
-    return 0;
+	printk("my module init: entry\n");	
+	my_file_node = proc_create("my_file_node", 0, NULL, &fn_proc_ops);
+	printk("my module init: exit\n");	
+	return 0;
 }
 
 static void my_module_exit(void){
-    printk("my module exit: entry\n");	
-    proc_remove(my_file_node);
-    printk("my module exit: exit\n");	
+	printk("my module exit: entry\n");	
+	proc_remove(my_file_node);
+	printk("my module exit: exit\n");	
 }
 
 module_init(my_module_init);
