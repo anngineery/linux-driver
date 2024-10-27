@@ -15,28 +15,36 @@ struct proc_ops fn_proc_ops = {
 };
 
 static ssize_t read_op(struct file *f, char __user *user_buffer, size_t size, loff_t *offset){
-	char msg_to_ubuffer[] = "my_file_node is read\n";
+	char msg_to_ubuffer[] = "read\n";
 	size_t str_len = sizeof(msg_to_ubuffer);	// this includes the null char
+	unsigned long nbytes_not_copied;
 
-	pr_debug("read_op: entry\n str_len: %ld, size: %ld", str_len, size);
+	pr_debug("read_op: entry\n");
+	pr_debug("read_op: str_len: %lu, size: %lu, offset: %llu\n", str_len, size, *offset);
 
-	if (*offset >= str_len)	return 0;
-
-	copy_to_user(user_buffer, msg_to_ubuffer, str_len);
+	nbytes_not_copied = copy_to_user(user_buffer, msg_to_ubuffer, str_len);
+	if (*offset >= str_len || nbytes_not_copied != 0)	return 0;
 	*offset += str_len;
+
+	pr_debug("read_op: exit\n");
 
 	return str_len;
 }
 
 static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t size, loff_t *offset){
-	size_t str_len = sizeof(user_buffer);	// this includes the null char
-	char kernel_buffer[str_len];
+	size_t str_len = size;
+	char kernel_buffer[size];
+	unsigned long nbytes_not_copied;
 
-	copy_from_user(kernel_buffer, user_buffer, str_len);
-	pr_debug("write_op: kernel_buffer: %s, size: %lln\n", kernel_buffer, offset);
+	pr_debug("write_op: entry\n");
+	pr_debug("write_op: str_len: %lu, size: %lu, offset: %llu size_max: %lu\n", str_len, size, *offset, SIZE_MAX);
+
+	nbytes_not_copied = copy_from_user(kernel_buffer, user_buffer, str_len);
+	if (*offset >= str_len || nbytes_not_copied != 0)	return 0;
+	*offset += str_len;
+
 	pr_debug("write_op: exit\n");
 
-	*offset = str_len;
 	return str_len;
 }
 
