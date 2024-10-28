@@ -23,8 +23,8 @@ The desired behaviour would be the new text keeps getting appended as long as we
 first second
 ```
 
-# Areas of Improvments 
+# Areas of Improvements 
 - [ ] Extend the functionality as discussed in Limitation section
-- [ ] Wrtie a small bash script to automate build, log cleanup and insertion of module
+- [ ] Write a small bash script to automate build, log cleanup and insertion of module
 - [ ] Write a python test script
 - [ ] Improve the Makefile to optionally choose to compile in debug mode
