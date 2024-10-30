@@ -14,7 +14,7 @@ Currently, each new write overrides the previous written text. For example:
 $ echo first > /proc/my_file_node
 $ cat /proc/my_file_node
 first
-$ echo second > /proc/my_file_node
+$ echo second >> /proc/my_file_node
 $ cat /proc/my_file_node
 second
 ```
@@ -26,5 +26,5 @@ first second
 # Areas of Improvements 
 - [ ] Extend the functionality as discussed in Limitation section
 - [ ] Write a small bash script to automate build, log cleanup and insertion of module
-- [ ] Write a python test script
+- [x] Write a python test script
 - [ ] Improve the Makefile to optionally choose to compile in debug mode
