@@ -4,3 +4,4 @@ module*
 *.o
 .*
 *.ko
+__pycache__/*
