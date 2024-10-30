@@ -14,8 +14,11 @@ def test_write_then_read():
     f.close()
 
     f = open(file_name, "r")
-    assert text == f.read()
+    content = f.read()
     f.close()
+
+    assert text == content
+    assert len(text) == len(content)
 
 
 
