@@ -7,8 +7,6 @@
 #include <linux/proc_fs.h>
 
 #define MAX_BUFFER_SIZE 1024
-int count = 0; // this is only for debug. remove later
-int read_count = 0;
 
 /* some module info */
 MODULE_LICENSE("GPL");
@@ -31,11 +29,12 @@ static ssize_t read_op(struct file *f, char __user *user_buffer, size_t size, lo
 	 * Return the number of bytes successfully read.
 	 * If an error occurs, a negative number is returned.
 	 * Return value of 0 means, EOF was reached.
+	 * Only when 0 is returned, the application program (for example, cat) will stop reading.
 	 *
 	 * @f: a file pointer to the proc file?
 	 * @user_buffer: user buffer to copy to
 	 * @size: size of user_buffer
-	 * @offset: current file position? 
+	 * @offset: current file position 
 	 */
 	unsigned long nbytes_not_copied;
 	size_t str_len = strlen(driver_buffer) - *offset;
@@ -46,11 +45,8 @@ static ssize_t read_op(struct file *f, char __user *user_buffer, size_t size, lo
 	if (*offset >= strlen(driver_buffer)) return 0;
 
 	nbytes_not_copied = copy_to_user(user_buffer + *offset, driver_buffer, str_len);
-	//pr_debug("read_op: exit\n");
-	if (read_count == 0){
-		nbytes_not_copied = 2;
-		read_count++;
-	}
+	pr_debug("read_op: exit\n");
+
 	if (nbytes_not_copied){
 		*offset += str_len - nbytes_not_copied;
 		return str_len - nbytes_not_copied;
@@ -72,7 +68,7 @@ static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t s
 	 * @f: a file pointer to the proc file?
 	 * @user_buffer: user buffer to copy from (in user space)
 	 * @size: size of data in user_buffer
-	 * @offset: current file position? 
+	 * @offset: current file position 
 	 */ 
 	unsigned long nbytes_not_copied;
 
@@ -85,12 +81,8 @@ static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t s
 	}
 
 	nbytes_not_copied = copy_from_user(driver_buffer+*offset, user_buffer, size);
-	if (count == 0){
-		nbytes_not_copied = 1;
-	}
-
-	count++;
 	pr_debug("write_op: exit\n");
+
 	if (nbytes_not_copied){
 		*offset += (size - nbytes_not_copied);
 		return size - nbytes_not_copied;
