@@ -1,10 +1,11 @@
 import pytest
+import subprocess
 
 
-@pytest.fixture()
+@pytest.fixture(autouse=True)
 def setup():
-    # load the module get the file handler
-    pass
+    subprocess.run(["./setup.sh"])
+
 
 def test_write_then_read():
     file_name = "/proc/my_file_node"
@@ -19,8 +20,3 @@ def test_write_then_read():
 
     assert text == content
     assert len(text) == len(content)
-
-
-
-
-
