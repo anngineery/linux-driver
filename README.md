@@ -2,6 +2,7 @@
 A loadable linux module that creates a file in the proc file system upon loading and allows read and write operation on the file
 
 # Setup
+I used [multipass](https://canonical.com/multipass) for sandboxing my environment.\
 There are some linux tools/utilities that are required. Install them by running `dependencies.sh`
 
 # How to run
