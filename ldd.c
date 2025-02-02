@@ -9,6 +9,7 @@
 #define MAX_BUFFER_SIZE 1024
 #define FUNC_START() pr_debug("%s: start\n", __func__)
 #define FUNC_END() pr_debug("%s: end\n", __func__)
+#define FUNC_DEBUG_INFO(...) pr_debug(__VA_ARGS__)
 
 /* some module info */
 MODULE_LICENSE("GPL");
@@ -44,7 +45,7 @@ static ssize_t read_op(struct file *f, char __user *user_buffer, size_t size, lo
 	size_t str_len = strlen(driver_buffer) - *offset;
 	ssize_t nbytes_read = 0;
 
-	pr_debug("read_op: size: %lu, offset: %llu\n", size, *offset);
+	FUNC_DEBUG_INFO("size: %lu, offset: %llu\n", size, *offset);
 
 	if (*offset < strlen(driver_buffer)){
 		nbytes_not_copied = copy_to_user(user_buffer + *offset, driver_buffer, str_len);
@@ -74,7 +75,7 @@ static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t s
 	unsigned long nbytes_not_copied;
 	ssize_t nbytes_written;
 
-	pr_debug("write_op: size: %lu, offset: %llu\n", size, *offset);
+	FUNC_DEBUG_INFO("size: %lu, offset: %llu\n", size, *offset);
 
 	if (size >= MAX_BUFFER_SIZE){
 		pr_warn("Input longer than max buffer size is not allowed\n");
