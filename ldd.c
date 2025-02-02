@@ -38,25 +38,22 @@ static ssize_t read_op(struct file *f, char __user *user_buffer, size_t size, lo
 	 * @size: size of user_buffer
 	 * @offset: current file position 
 	 */
+	FUNC_START();
+
 	unsigned long nbytes_not_copied;
 	size_t str_len = strlen(driver_buffer) - *offset;
+	ssize_t nbytes_read = 0;
 
-	FUNC_START();
 	pr_debug("read_op: size: %lu, offset: %llu\n", size, *offset);
 
-	if (*offset >= strlen(driver_buffer)) return 0;
+	if (*offset < strlen(driver_buffer)){
+		nbytes_not_copied = copy_to_user(user_buffer + *offset, driver_buffer, str_len);
+		nbytes_read = str_len - nbytes_not_copied;
+		*offset += nbytes_read;
+	}
 
-	nbytes_not_copied = copy_to_user(user_buffer + *offset, driver_buffer, str_len);
 	FUNC_END();
-
-	if (nbytes_not_copied){
-		*offset += str_len - nbytes_not_copied;
-		return str_len - nbytes_not_copied;
-	}
-	else {
-		*offset += str_len;
-		return str_len;
-	}
+	return nbytes_read;
 }
 
 static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t size, loff_t *offset){
@@ -72,27 +69,25 @@ static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t s
 	 * @size: size of data in user_buffer
 	 * @offset: current file position 
 	 */ 
-	unsigned long nbytes_not_copied;
-
 	FUNC_START();
+
+	unsigned long nbytes_not_copied;
+	ssize_t nbytes_written;
+
 	pr_debug("write_op: size: %lu, offset: %llu\n", size, *offset);
 
 	if (size >= MAX_BUFFER_SIZE){
 		pr_warn("Input longer than max buffer size is not allowed\n");
+		FUNC_END();
 		return -ENOMEM;
 	}
 
 	nbytes_not_copied = copy_from_user(driver_buffer+*offset, user_buffer, size);
-	FUNC_END();
+	nbytes_written = size - nbytes_not_copied;
+	*offset += nbytes_written;
 
-	if (nbytes_not_copied){
-		*offset += (size - nbytes_not_copied);
-		return size - nbytes_not_copied;
-	}
-	else {
-		*offset += size;
-		return size;
-	}
+	FUNC_END();
+	return nbytes_written;
 }
 
 static int my_module_init(void){
