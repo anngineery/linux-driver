@@ -7,6 +7,8 @@
 #include <linux/proc_fs.h>
 
 #define MAX_BUFFER_SIZE 1024
+#define FUNC_START() pr_debug("%s: start\n", __func__)
+#define FUNC_END() pr_debug("%s: end\n", __func__)
 
 /* some module info */
 MODULE_LICENSE("GPL");
@@ -39,13 +41,13 @@ static ssize_t read_op(struct file *f, char __user *user_buffer, size_t size, lo
 	unsigned long nbytes_not_copied;
 	size_t str_len = strlen(driver_buffer) - *offset;
 
-	pr_debug("read_op: entry\n");
+	FUNC_START();
 	pr_debug("read_op: size: %lu, offset: %llu\n", size, *offset);
 
 	if (*offset >= strlen(driver_buffer)) return 0;
 
 	nbytes_not_copied = copy_to_user(user_buffer + *offset, driver_buffer, str_len);
-	pr_debug("read_op: exit\n");
+	FUNC_END();
 
 	if (nbytes_not_copied){
 		*offset += str_len - nbytes_not_copied;
@@ -72,7 +74,7 @@ static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t s
 	 */ 
 	unsigned long nbytes_not_copied;
 
-	pr_debug("write_op: entry\n");
+	FUNC_START();
 	pr_debug("write_op: size: %lu, offset: %llu\n", size, *offset);
 
 	if (size >= MAX_BUFFER_SIZE){
@@ -81,7 +83,7 @@ static ssize_t write_op(struct file *f, const char __user *user_buffer, size_t s
 	}
 
 	nbytes_not_copied = copy_from_user(driver_buffer+*offset, user_buffer, size);
-	pr_debug("write_op: exit\n");
+	FUNC_END();
 
 	if (nbytes_not_copied){
 		*offset += (size - nbytes_not_copied);
@@ -101,7 +103,7 @@ static int my_module_init(void){
 	 *
 	 * Return 0 on success or a non-zero number on failure.
 	 */
-	pr_debug("my module init: entry\n");	
+	FUNC_START();
 	umode_t mode = 0666;	
 	fn_proc_ops.proc_read = read_op;
 	fn_proc_ops.proc_write = write_op;
@@ -111,14 +113,14 @@ static int my_module_init(void){
 		return -ENOMEM;
 	}
 
-	pr_debug("my module init: exit\n");	
+	FUNC_END();
 	return 0;
 }
 
 static void my_module_exit(void){
-	pr_debug("my module exit: entry\n");	
+	FUNC_START();
 	proc_remove(my_file_node);
-	pr_debug("my module exit: exit\n");	
+	FUNC_END();
 }
 
 module_init(my_module_init);
