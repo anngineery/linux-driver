@@ -42,4 +42,4 @@ first second
 - [ ] Extend the functionality as discussed in Limitation section
 - [x] Write a small bash script to automate build, log cleanup and insertion of module
 - [x] Write a python test script
-- [ ] Improve the Makefile to optionally choose to compile in debug mode
+- [x] Improve the Makefile to optionally choose to compile in debug mode
