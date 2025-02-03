@@ -7,9 +7,15 @@
 #include <linux/proc_fs.h>
 
 #define MAX_BUFFER_SIZE 1024
+#ifdef DEBUG
 #define FUNC_START() pr_debug("%s: start\n", __func__)
 #define FUNC_END() pr_debug("%s: end\n", __func__)
 #define FUNC_DEBUG_INFO(...) pr_debug(__VA_ARGS__)
+#else
+#define FUNC_START()
+#define FUNC_END()
+#define FUNC_DEBUG_INFO(...)
+#endif
 
 /* some module info */
 MODULE_LICENSE("GPL");
