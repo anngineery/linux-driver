@@ -2,6 +2,8 @@ ldd.mod*
 Module*
 module*
 *.o
+*.s
+*.i
 .*
 *.ko
 __pycache__/*
